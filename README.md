@@ -6,9 +6,7 @@ A local Windows MCP server for Claude Code. Runs as a stdio subprocess managed b
 
 | Tool | Description |
 |------|-------------|
-| `get_latest_screenshot()` | Returns the most recent `.png` from the screenshots directory as image content |
-| `list_screenshots(n=10)` | Returns filenames + timestamps of the N most recent screenshots (no image data loaded) |
-| `get_screenshot(filename)` | Returns a specific screenshot by basename — use after `list_screenshots` |
+| `list_screenshots(n=10)` | Returns full paths + timestamps of the N most recent screenshots; pass any path to the Read tool to view it |
 | `get_clipboard()` | Returns current clipboard text — may contain sensitive data, never logged |
 | `get_active_window()` | Returns the title of the currently focused window |
 | `send_notification(title, message)` | Sends a Windows toast notification |
@@ -68,3 +66,7 @@ The MCP server starts automatically on the next Claude Code session.
 - **pywin32** — Win32 API bindings (clipboard, active window)
 - **winotify** — Windows toast notifications via Windows Runtime
 - **screeninfo** — Cross-platform monitor resolution enumeration
+
+## Screenshot workflow
+
+MCP tool results have a hard size limit that base64-encoded images reliably exceed. The `list_screenshots` tool returns full file paths; use the `Read` tool in Claude Code to view any of them. Claude Code delivers images through `Read` natively without the size constraint.

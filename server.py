@@ -5,7 +5,6 @@ Provides tools for screenshots, clipboard, system info, and Windows notification
 Runs as a stdio subprocess managed by Claude Code — no network port or auth needed.
 """
 
-import base64
 import ctypes
 import os
 import platform
@@ -20,7 +19,6 @@ from screeninfo import get_monitors
 from winotify import Notification
 
 from mcp.server.fastmcp import FastMCP
-from mcp.types import ImageContent
 
 # Screenshot directory — set WINDOWS_MCP_SCREENSHOT_DIR env var to override this default
 SCREENSHOTS_DIR = Path(
@@ -41,26 +39,11 @@ def _sorted_screenshots() -> list[Path]:
     )
 
 
-def _path_to_image(path: Path) -> ImageContent:
-    """Read a PNG file and return it as MCP ImageContent."""
-    data = base64.b64encode(path.read_bytes()).decode("ascii")
-    return ImageContent(type="image", data=data, mimeType="image/png")
-
-
-@mcp.tool()
-def get_latest_screenshot() -> ImageContent:
-    """Return the single most recent screenshot as image content."""
-    shots = _sorted_screenshots()
-    if not shots:
-        raise ValueError(f"No screenshots found in {SCREENSHOTS_DIR}")
-    return _path_to_image(shots[0])
-
-
 @mcp.tool()
 def list_screenshots(n: int = 10) -> str:
     """
-    Return a text list of the N most recent screenshot filenames with modification timestamps.
-    No image data is loaded. Use this to identify which screenshot to fetch with get_screenshot.
+    Return the N most recent screenshot full paths with modification timestamps.
+    To view a screenshot, pass the full path to the Read tool.
     """
     shots = _sorted_screenshots()[:n]
     if not shots:
@@ -68,36 +51,8 @@ def list_screenshots(n: int = 10) -> str:
     lines = []
     for p in shots:
         mtime = datetime.fromtimestamp(p.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")
-        lines.append(f"{p.name}  ({mtime})")
+        lines.append(f"{p}  ({mtime})")
     return "\n".join(lines)
-
-
-@mcp.tool()
-def get_screenshot(filename: str) -> ImageContent:
-    """
-    Return a specific screenshot by filename (basename only — no path components).
-    Use list_screenshots first to identify available filenames.
-    """
-    # Strip all directory components — this is the primary path traversal defense
-    safe_name = Path(filename).name
-    if not safe_name:
-        raise ValueError("Filename cannot be empty")
-
-    target = (SCREENSHOTS_DIR / safe_name).resolve()
-    resolved_dir = SCREENSHOTS_DIR.resolve()
-
-    # Secondary check: ensure resolved path is inside the screenshots directory
-    try:
-        target.relative_to(resolved_dir)
-    except ValueError:
-        raise ValueError(f"Invalid filename: {filename!r}")
-
-    if target.suffix.lower() != ".png":
-        raise ValueError(f"Only .png files are supported, got: {target.suffix!r}")
-    if not target.exists():
-        raise FileNotFoundError(f"Screenshot not found: {safe_name}")
-
-    return _path_to_image(target)
 
 
 @mcp.tool()
