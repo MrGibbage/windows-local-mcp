@@ -57,16 +57,6 @@ def get_latest_screenshot() -> ImageContent:
 
 
 @mcp.tool()
-def get_recent_screenshots(n: int = 2) -> list[ImageContent]:
-    """Return the N most recent screenshots as image content, newest first. Max 5."""
-    n = min(max(1, n), 5)
-    shots = _sorted_screenshots()[:n]
-    if not shots:
-        raise ValueError(f"No screenshots found in {SCREENSHOTS_DIR}")
-    return [_path_to_image(p) for p in shots]
-
-
-@mcp.tool()
 def list_screenshots(n: int = 10) -> str:
     """
     Return a text list of the N most recent screenshot filenames with modification timestamps.

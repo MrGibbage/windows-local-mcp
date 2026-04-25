@@ -7,7 +7,6 @@ A local Windows MCP server for Claude Code. Runs as a stdio subprocess managed b
 | Tool | Description |
 |------|-------------|
 | `get_latest_screenshot()` | Returns the most recent `.png` from the screenshots directory as image content |
-| `get_recent_screenshots(n=2)` | Returns the N most recent screenshots as image content, newest first (max 5) |
 | `list_screenshots(n=10)` | Returns filenames + timestamps of the N most recent screenshots (no image data loaded) |
 | `get_screenshot(filename)` | Returns a specific screenshot by basename — use after `list_screenshots` |
 | `get_clipboard()` | Returns current clipboard text — may contain sensitive data, never logged |
