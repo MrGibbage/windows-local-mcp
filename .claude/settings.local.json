@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(python -c \"import sys; print\\(sys.prefix\\)\")",
+      "PowerShell(python -c \"import win32api; print\\('win32api OK'\\)\" 2>&1)",
+      "PowerShell(python -c \"import mcp; print\\('mcp OK'\\)\" 2>&1)",
+      "PowerShell(python -c \"import winotify; print\\('winotify OK'\\)\" 2>&1)",
+      "PowerShell(python -c \"import screeninfo; print\\('screeninfo OK'\\)\" 2>&1)",
+      "PowerShell(python -c \"import win32clipboard; print\\('win32clipboard OK'\\)\" 2>&1)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "mcp__github__create_repository",
+      "PowerShell(pip install Pillow -q)",
+      "PowerShell(python -c \"from PIL import Image; print\\('Pillow OK, version', __import__\\('PIL'\\).__version__\\)\")",
+      "WebSearch",
+      "WebFetch(domain:gofastmcp.com)",
+      "WebFetch(domain:github.com)",
+      "mcp__homelab-mcp__list_directory",
+      "mcp__homelab-mcp__grep_file",
+      "mcp__homelab-mcp__read_file",
+      "mcp__homelab-mcp__ssh_exec",
+      "mcp__homelab-mcp__patch_file",
+      "mcp__homelab-mcp__docker_restart"
+    ]
+  }
+}
